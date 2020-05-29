@@ -13,11 +13,12 @@ public class Mysql
 {	
 	Connection baza;
 	Permissions user;
-	String url = "jdbc:mysql://127.0.0.1:3306/lab3?serverTimezone=UTC";
+	String url = "jdbc:mysql://localhost:3306/lab3?serverTimezone=UTC";
 	
 	public Mysql(Permissions user)
 	{
 		this.user = user;
+		connect();
 	}
 	
 	public void connect()
@@ -34,6 +35,16 @@ public class Mysql
 	            System.out.println("VendorError: " + ex.getErrorCode());
 	        }
 	        System.out.print("polaczono z baza\n");
+	}
+	public String[] getColumns(String tabela)
+	{
+		//zwraca string array kolumn
+		return null;
+	}
+	public String[] getTables()
+	{
+		//zwraca string array tabel
+		return null;
 	}
 	
 	public void select(String query)
@@ -63,6 +74,10 @@ public class Mysql
             System.out.println("VendorError: " + ex.getErrorCode());
         }
 	}
+	public boolean insert(String input[],String into[],String Tabela)
+	{
+		return true;
+	}
 	public void close()
 	{
 		try
@@ -76,5 +91,4 @@ public class Mysql
             System.out.println("VendorError: " + ex.getErrorCode());
 		}
 	}
-	
 }
