@@ -9,4 +9,4 @@ Patryk KANIEWSKI i Wojciech Złomek
 
 ## TODO:
 
-1.
+1. wszystko
