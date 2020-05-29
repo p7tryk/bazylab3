@@ -1,10 +1,10 @@
 # Bazy laboratorium 3
 
 
-## Prosta aplikacja bazodanowa
+Prosta aplikacja bazodanowa
 
 
-### Patryk KANIEWSKI i Wojciech Złomek
+Patryk KANIEWSKI i Wojciech Złomek
 
 
 ## TODO:
