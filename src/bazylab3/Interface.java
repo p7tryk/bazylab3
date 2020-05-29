@@ -5,7 +5,13 @@ import javax.swing.*;
 public class Interface
 {
 	//tutaj bedzie interfejs generowany i zmieniany
-	
+	//TODO wszystko?
+		
+	/*
+	 * tak ogolnie mysle zeby tutaj byl array tablic = Mysql.getTables
+	 * i do kazdej tabeli byla array kolumn = Mysql.getColumns
+	 * wtedy od razu bedzie wiadomo jak rozlozyci interfejs w sensie miejsca
+	 */
 	JFrame okno;
 	
 	public Interface()
