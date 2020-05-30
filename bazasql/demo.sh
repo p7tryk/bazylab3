@@ -16,7 +16,7 @@ function clean()
 
     sudo mysql -u $mysql_user -p$mysql_password < createusers.sql
     echo -e "${RED}uprawnienia ustawione${NC}\n"
-    
+
     sleep 1
 }
 clean

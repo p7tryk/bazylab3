@@ -11,11 +11,12 @@ public class Mysql
 	{
 		Connection baza;
 		Permissions user;
-		String url = "jdbc:mysql://localhost:3306/lab3?serverTimezone=UTC";
+		String url;
 
-		public Mysql(Permissions user)
+		public Mysql(Permissions user, String ip, int port)
 			{
 				this.user = user;
+				this.url = "jdbc:mysql://"+ ip + ":" + port + "/lab3?serverTimezone=UTC";
 				connect();
 			}
 
@@ -32,34 +33,63 @@ public class Mysql
 				System.out.print("polaczono z baza\n");
 			}
 
+		
 		public String[] getColumns(String query)
-		{
-				Statement zapytanie;
-				try
-				{
-					zapytanie = baza.createStatement();
-					ResultSet wynik = zapytanie.executeQuery(query);
-					ResultSetMetaData wynikMeta = wynik.getMetaData();
-					int kolumny = wynikMeta.getColumnCount();
-					String output[] = new String[kolumny];
-					for (int i = 1; i <= kolumny; i++)
+			{
+					Statement zapytanie;
+					try
 					{
-						output[i - 1] = wynikMeta.getColumnName(i);
+						zapytanie = baza.createStatement();
+						ResultSet wynik = zapytanie.executeQuery(query);
+						ResultSetMetaData wynikMeta = wynik.getMetaData();
+						int kolumny = wynikMeta.getColumnCount();
+						String output[] = new String[kolumny];
+						for (int i = 1; i <= kolumny; i++)
+						{
+							output[i - 1] = wynikMeta.getColumnName(i);
+						}
+						return output;
+					} catch (SQLException ex)
+					{
+						debug(ex);
 					}
-					return output;
-				} catch (SQLException ex)
-				{
-					debug(ex);
+
+					return null; // just in case
+
 				}
+		public String[] getColumnTypes(String query)
+			{
+					Statement zapytanie;
+					try
+					{
+						zapytanie = baza.createStatement();
+						ResultSet wynik = zapytanie.executeQuery(query);
+						ResultSetMetaData wynikMeta = wynik.getMetaData();
+						int kolumny = wynikMeta.getColumnCount();
+						String output[] = new String[kolumny];
+						for (int i = 1; i <= kolumny; i++)
+						{
+							output[i - 1] = wynikMeta.getColumnClassName(i);
+						}
+						return output;
+					} catch (SQLException ex)
+					{
+						debug(ex);
+					}
 
-				return null; // just in case
+					return null; // just in case
 
-			}
+				}
 
 		public String[] getTables()
 			{
-				// TODO zwraca string array tabel
-				return null;
+				String temp[][] = select("show tables;");
+				String kolumna[] = new String[temp.length];
+				for(int i = 0;i<kolumna.length;i++)
+				{
+					kolumna[i] = temp[i][0];
+				}
+				return kolumna;
 			}
 
 		public String[][] select(String query)
