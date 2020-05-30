@@ -9,5 +9,7 @@ Patryk KANIEWSKI i Wojciech ZŁOMEK
 
 ## TODO:
 
-1. Interfejs
+1. Interfejs	pls ziomek
 2. insert
+3. update
+4. delete

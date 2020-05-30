@@ -32,9 +32,8 @@ public class Mysql
 				System.out.print("polaczono z baza\n");
 			}
 
-		public String[] getColumns(String tabela)
-			{
-				String query = "select * from " + tabela + " where 1=0";
+		public String[] getColumns(String query)
+		{
 				Statement zapytanie;
 				try
 				{
@@ -45,7 +44,7 @@ public class Mysql
 					String output[] = new String[kolumny];
 					for (int i = 1; i <= kolumny; i++)
 					{
-						output[i - 1] = wynik.getString(i);
+						output[i - 1] = wynikMeta.getColumnName(i);
 					}
 					return output;
 				} catch (SQLException ex)
@@ -83,7 +82,7 @@ public class Mysql
 					{
 					}
 
-					String output[][] = new String[kolumny][n];
+					String output[][] = new String[n][kolumny];
 					n = 0;
 					while (wynik.next())
 					{
@@ -95,7 +94,7 @@ public class Mysql
 							String pole = wynik.getString(i);
 //							System.out.print(pole);
 
-							output[i - 1][n] = pole;
+							output[n][i-1] = pole;
 						}
 						n++;
 //						System.out.print("\n"); //debug output
