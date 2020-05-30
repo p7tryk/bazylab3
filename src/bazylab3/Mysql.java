@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 
 public class Mysql
 	{
@@ -105,12 +107,9 @@ public class Mysql
 					// tutaj jest hack zeby dostac liczbe rekordow zwroconych, w sumie to nie wiem
 					// czy da sie lepiej zrobic
 					while (wynik.next())
-					{
 						n++;
-					}
 					while (wynik.previous())
-					{
-					}
+						assert true; //NOOP
 
 					String output[][] = new String[n][kolumny];
 					n = 0;
@@ -118,16 +117,11 @@ public class Mysql
 					{
 						for (int i = 1; i <= kolumny; i++)
 						{
-							// debug output
-//							if (i > 1)
-//								System.out.print(",  ");
 							String pole = wynik.getString(i);
-//							System.out.print(pole);
 
 							output[n][i-1] = pole;
 						}
 						n++;
-//						System.out.print("\n"); //debug output
 					}
 					return output;
 				} catch (SQLException ex)
@@ -136,10 +130,43 @@ public class Mysql
 				}
 				return null; // just incase
 			}
-
-		public boolean insert(String input[], String into[], String Tabela)
+		
+		public String arrayToString(String array[])
+		{
+				String output = new String();
+				output = Arrays.deepToString(array).replace("[", "").replace("]", "");
+//				System.out.print("array :\n" +  output + "\n");
+				return output;
+		}
+		public String objectToString(List<Object> object)
+		{
+			String output =  new String();
+			output = object.toString().replace("[", "").replace("]", "");
+			return output;
+		}
+		
+		public int insertInto(String tabela, String into[], List<Object> values)
 			{
-				return true;
+//				TODO to jest zle i podobno nie tak sie robi ale narazie zobaczy czy uda mi sie to tak zrobic
+//				SQLException: Unknown column 'animowany' in 'field list'
+//				SQLState: 42S22
+//				VendorError: 1054
+				String query = "insert into " + tabela  
+			+ " values(" + objectToString(values)+");";
+				System.out.print("insert:\n" + query + "\n"); //debug
+				
+				Statement zapytanie;
+				try
+				{
+					zapytanie = baza.createStatement();
+					int wynik = zapytanie.executeUpdate(query);
+					return wynik;
+				} catch (SQLException ex)
+				{
+					debug(ex);
+				}
+				
+				return -1;
 			}
 
 		public void close()
