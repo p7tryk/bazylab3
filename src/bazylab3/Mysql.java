@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Mysql
 	{
-		Connection baza;
+		Connection baza = null;
 		Permissions user;
 		String url;
 
@@ -173,6 +173,7 @@ public class Mysql
 			{
 				try
 				{
+					System.out.printf("zamykam baze\n");
 					baza.close();
 				} catch (SQLException ex)
 				{

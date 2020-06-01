@@ -19,7 +19,6 @@ public class Main
 		}
 		else
 		{
-		
 		Permissions user1 =  new Permissions("admin","pwsz");
 		Mysql db1 = new Mysql(user1, "localhost", 3306);
 		
@@ -38,18 +37,17 @@ public class Main
 		System.out.print("\n");
 		printArray(test3);
 		
-		//TODO insert prymitiwa
-		List<Object> values = new ArrayList<Object>();
-		
-		values.add(new Integer(69));
-		values.add(new String("tytul"));
-		values.add(new Integer(2069));
-		values.add(new Integer(420));
-		values.add(new Integer(66642066));
-		values.add(new String("test")); 
-		
-		db1.insertInto("filmy", test2, values);
-		
+//		//TODO insert prymitiwa
+//		List<Object> values = new ArrayList<Object>();
+//		
+//		values.add(new Integer(69)); //nie wiem jak to zrobic porzadnie
+//		values.add(new String("tytul"));
+//		values.add(new Integer(2069));
+//		values.add(new Integer(420));
+//		values.add(new Integer(66642066));
+//		values.add(new String("test")); 
+//		
+//		db1.insertInto("filmy", test2, values);
 		
 		db1.close();
 		}
