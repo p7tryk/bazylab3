@@ -15,6 +15,8 @@ Patryk KANIEWSKI i Wojciech ZŁOMEK
     1.3. logowanie	-patryk  
     1.4. dodawanie  
     1.5. rawsql		-patryk  
+    1.6. update  
+    1.7. delete  
 2. mysql  
     2.1. ~~select~~		-patryk  
     2.2. insert		-patryk  
