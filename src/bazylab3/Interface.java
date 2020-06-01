@@ -33,7 +33,6 @@ public class Interface
 		String kolumny[];
 		Permissions user1 = new Permissions("admin","pwsz");
 		db1 =  new Mysql(user1,"127.0.0.1",3306);
-		db1.connect();
 		output = db1.select("select * from filmy");
 		kolumny = db1.getColumns("select * from filmy");
 		
