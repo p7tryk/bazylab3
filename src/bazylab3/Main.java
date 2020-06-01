@@ -13,6 +13,7 @@ public class Main
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("wpisz tryb:\n1 gui\ninny klawisz konsola\n");
 		int i =  scanner.nextInt();
+		scanner.close();
 		if(i==1)
 		{
 			Interface gui = new Interface();	

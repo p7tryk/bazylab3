@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Mysql
 	{
-		Connection baza = null;
+		Connection baza;
 		Permissions user;
 		String url;
 

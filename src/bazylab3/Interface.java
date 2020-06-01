@@ -14,6 +14,7 @@ public class Interface
 		 * tabeli byla array kolumn = Mysql.getColumns wtedy od razu bedzie wiadomo jak
 		 * rozlozyci interfejs w sensie miejsca
 		 */
+		String currenttable = new String("filmy");
 		JFrame okno;
 		Mysql db1;
 		Permissions user1;
@@ -59,8 +60,8 @@ public class Interface
 
 		public void test()
 			{
-				String[][] output = db1.select("select * from filmy");
-				String[] kolumny = db1.getColumns("select * from filmy");
+				String[][] output = db1.select("select * from " + currenttable);
+				String[] kolumny = db1.getColumns("select * from " + currenttable);
 				drawTable(output, kolumny);
 			}
 	}
