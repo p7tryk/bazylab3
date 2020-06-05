@@ -16,7 +16,7 @@ public class Main
 		scanner.close();
 		if(i==1)
 		{
-			Interface gui = new Interface();	
+			GUI gui = new GUI();	
 		}
 		else
 		{

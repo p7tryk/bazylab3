@@ -2,6 +2,7 @@ package bazylab3;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -98,8 +99,8 @@ public class Mysql
 			{
 				try
 				{
-					Statement zapytanie = baza.createStatement();
-					ResultSet wynik = zapytanie.executeQuery(query);
+					PreparedStatement zapytanie = baza.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE );
+					ResultSet wynik = zapytanie.executeQuery();
 					ResultSetMetaData wynikMeta = wynik.getMetaData();
 					int kolumny = wynikMeta.getColumnCount();
 					int n = 0;

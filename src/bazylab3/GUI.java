@@ -1,10 +1,13 @@
 package bazylab3;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class Interface
+public class GUI implements ActionListener
 	{
 		// tutaj bedzie interfejs generowany i zmieniany
 		// TODO wszystko?
@@ -19,11 +22,16 @@ public class Interface
 		Mysql db1;
 		Permissions user1;
 
-		public Interface()
+		JTextField tf1 = new JTextField("od");
+		JTextField tf2 = new JTextField("do");
+
+		
+		public GUI()
 			{
 				stworzOkno();
 				login("admin", "pwsz", "localhost", 3306);
 				test();
+				nazajeciach();
 				okno.setVisible(true);
 				logout();
 			}
@@ -49,19 +57,47 @@ public class Interface
 
 		public void drawTable(String data[][], String header[])
 			{
+				JPanel jpl2 =  new JPanel();
 				System.out.print("drawing table\n");
 				// To w sumie wydaje sie banalne
 				JTable tabela = new JTable(data, header);
 
-				okno.setLayout(new BorderLayout());
-				okno.add(tabela.getTableHeader(), BorderLayout.PAGE_START);
-				okno.add(tabela, BorderLayout.CENTER);
+				jpl2.setLayout(new BorderLayout());
+				jpl2.add(tabela.getTableHeader(), BorderLayout.PAGE_START);
+				jpl2.add(tabela, BorderLayout.CENTER);
+				okno.add(jpl2);
+			}
+
+		public void nazajeciach()
+			{
+				//TODO to tylko jest
+				JPanel jpl = new JPanel();
+				JLabel jl1 = new JLabel("termin oddania");
+
+				tf1.setPreferredSize(new Dimension(128, 32));
+				tf2.setPreferredSize(new Dimension(128, 32));
+
+				JButton btn1 = new JButton("filtruj");
+				btn1.addActionListener(this);
+				jpl.add(jl1);
+				jpl.add(tf1);
+				jpl.add(tf2);
+				jpl.add(btn1);
+				okno.add(jpl);
 			}
 
 		public void test()
 			{
+
 				String[][] output = db1.select("select * from " + currenttable);
 				String[] kolumny = db1.getColumns("select * from " + currenttable);
 				drawTable(output, kolumny);
+			}
+		
+		@Override
+		public void actionPerformed(ActionEvent e)
+			{
+				System.out.print("klikniety\n");
+				System.out.print("od " + tf1.getText() + " do " + tf2.getText() + "\n");
 			}
 	}
