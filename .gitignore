@@ -72,7 +72,7 @@ resources/
 *.class
 
 # eclipse specific git ignore
-*.pydevproject
+#*.pydevproject
 #.project
 #.metadata
 bin/**
@@ -82,10 +82,10 @@ tmp/**/*
 *.bak
 *.swp
 *~.nib
-local.properties
+#local.properties
 #.classpath
 #.settings/
-.loadpath
+#.loadpath
 
 # External tool builders
 .externalToolBuilders/
