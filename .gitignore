@@ -82,9 +82,9 @@ tmp/**/*
 *.bak
 *.swp
 *~.nib
-#local.properties
+local.properties
 #.classpath
-#.settings/
+.settings/
 #.loadpath
 
 # External tool builders
