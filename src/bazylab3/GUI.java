@@ -29,7 +29,7 @@ public class GUI implements ActionListener
 		public GUI()
 			{
 				stworzOkno();
-				login("admin", "pwsz", "localhost", 3306);
+				login("admin", "pwsz", Main.ip, 3306);
 				test();
 				nazajeciach();
 				okno.setVisible(true);
