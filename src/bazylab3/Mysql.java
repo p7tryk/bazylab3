@@ -22,6 +22,7 @@ public class Mysql
 				this.url = "jdbc:mysql://"+ ip + ":" + port + "/lab3?serverTimezone=UTC";
 				connect();
 			}
+		
 
 		public void connect()
 			{

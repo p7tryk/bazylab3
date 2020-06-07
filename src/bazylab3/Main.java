@@ -7,21 +7,23 @@ import java.util.Scanner;
 
 public class Main
 	{
-		public static String ip;
+		public static String ip = "127.0.0.1";
 
 		public static void main(String[] args)
 			{
 
-				Scanner scanner = new Scanner(System.in);
-
-				System.out.print("wpisz ip do ktorego chcesz sie polaczyc\n");
-				Main.ip = scanner.next();
-				System.out.print("wpisz tryb:\n1 gui\ninny klawisz konsola\n");
-				int i = scanner.nextInt();
-				scanner.close();
+//				Scanner scanner = new Scanner(System.in);
+//
+//				System.out.print("wpisz ip do ktorego chcesz sie polaczyc\n");
+//				Main.ip = scanner.next();
+//				System.out.print("wpisz tryb:\n1 gui\ninny klawisz konsola\n");
+//				int i = scanner.nextInt();
+//				scanner.close();
+				int i = 1;
+				
 				if (i == 1)
 				{
-					GUI gui = new GUI();
+					GUI2 gui = new GUI2();
 				} else
 				{
 					Permissions user1 = new Permissions("admin", "pwsz");
