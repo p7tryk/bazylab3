@@ -65,7 +65,7 @@ public class GUI implements ActionListener
 				jpl2.setLayout(new BorderLayout());
 				jpl2.add(tabela.getTableHeader(), BorderLayout.PAGE_START);
 				jpl2.add(tabela, BorderLayout.CENTER);
-				okno.add(jpl2);
+				okno.add(BorderLayout.SOUTH,jpl2);
 			}
 
 		public void nazajeciach()
