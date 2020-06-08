@@ -11,14 +11,14 @@ Patryk KANIEWSKI i Wojciech ZŁOMEK
 
  1. Interfejs		pls ziomek  
     1.1. ~~wyswietlanie tabeli~~  
-    1.2. filtr  
+    1.2. ~~filtr~~  
     1.3. logowanie	-patryk  
-    1.4. dodawanie  
-    1.5. rawsql		-patryk  
-    1.6. update  
-    1.7. delete  
+    1.4. ~~dodawanie~~  
+    1.5. ~~rawsql~~		-patryk  
+    1.6. ~~update~~  
+    1.7. ~~delete~~  
 2. mysql  
     2.1. ~~select~~		-patryk  
-    2.2. insert		-patryk  
-    2.3. update		-patryk  
-    2.4. delete		-patryk  
+    2.2. ~~insert~~		-patryk  
+    2.3. ~~update~~		-patryk  
+    2.4. ~~delete~~		-patryk  
