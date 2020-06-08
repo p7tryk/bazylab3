@@ -50,7 +50,7 @@ public class GUI
 		public static void updateTable()
 			{
 				// zapytanie sql
-				System.out.print("aktualizacja query " + currentQuery + "\n");
+				System.out.print("drawing: " + currentQuery + "\n");
 				data = db1.select(currentQuery);
 				kolumny = db1.getColumns(currentQuery);
 
@@ -103,6 +103,9 @@ public class GUI
 				final JTextField tfod = new JTextField("od");
 				final JTextField tfdo = new JTextField("do");
 
+				tfod.setPreferredSize(new Dimension(120,30));
+				tfdo.setPreferredSize(new Dimension(120,30));
+				
 				jp2.add(jl2);
 				jp2.add(jComboPola);
 				jp2.add(tfod);

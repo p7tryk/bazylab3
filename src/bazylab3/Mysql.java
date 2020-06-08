@@ -20,7 +20,7 @@ public class Mysql
 			{
 				this.user = login;
 				this.url = "jdbc:mysql://" + user.ip + ":" + user.port + "/lab3?serverTimezone=UTC";
-				System.out.print("probuje: "+ url + "\n");
+				System.out.print("probuje: "+ url + "\n" + user.username + " " + user.password + "\n");
 				connect();
 			}
 
@@ -203,8 +203,47 @@ public class Mysql
 
 		public Boolean alterRow(String tabela, String[] kolumny, String[] values, String[] delete)
 			{
-				deleteRow(tabela, kolumny, delete);
-				insertInto(tabela, kolumny, values);
+//				deleteRow(tabela, kolumny, delete);
+//				insertInto(tabela, kolumny, values);
+				
+//				UPDATE Customers
+//				SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
+//				WHERE CustomerID = 1;
+				
+				String query = "update " + tabela + " set ";
+
+				for (int i = 0; i < values.length; i++)
+				{
+					if (i != 0)
+						query = query + " , ";
+					query = query + kolumny[i] + " = \"" + values[i] + "\"";
+				}
+				
+				query = query + " where ";
+				
+				for (int i = 0; i < values.length; i++)
+				{
+					if (i != 0)
+						query = query + " and ";
+					query = query + kolumny[i] + " = \"" + delete[i] + "\"";
+				}
+				
+
+				System.out.print(query + "\n"); // debug
+
+				Statement zapytanie;
+				try
+				{
+					zapytanie = baza.createStatement();
+					int wynik = zapytanie.executeUpdate(query);
+					return true;
+				} catch (SQLException ex)
+				{
+					debug(ex);
+				}
+
+				
+				
 				return false;
 			}
 
