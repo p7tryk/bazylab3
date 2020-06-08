@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- Created by htmlize-1.56 in css mode. -->
+<html>
+  <head>
+    <title>GUI.java</title>
+    <style type="text/css">
+    <!--
+      body {
+        color: #eeeeec;
+        background-color: #222;
+      }
+      .comment {
+        /* font-lock-comment-face */
+        color: #73d216;
+      }
+      .comment-delimiter {
+        /* font-lock-comment-delimiter-face */
+        color: #73d216;
+      }
+      .constant {
+        /* font-lock-constant-face */
+        color: #e9b2e3;
+      }
+      .function-name {
+        /* font-lock-function-name-face */
+        color: #fce94f;
+      }
+      .keyword {
+        /* font-lock-keyword-face */
+        color: #b4fa70;
+      }
+      .string {
+        /* font-lock-string-face */
+        color: #e9b96e;
+      }
+      .type {
+        /* font-lock-type-face */
+        color: #8cc4ff;
+      }
+      .variable-name {
+        /* font-lock-variable-name-face */
+        color: #fcaf3e;
+      }
+
+      a {
+        color: inherit;
+        background-color: inherit;
+        font: inherit;
+        text-decoration: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    -->
+    </style>
+  </head>
+  <body>
+    <pre>
+<span class="keyword"> package</span> <span class="constant">bazylab3</span>;
+ 
+<span class="keyword"> import</span> <span class="constant">javax</span>.<span class="constant">swing</span>.*;
+<span class="keyword"> import</span> <span class="constant">javax</span>.<span class="constant">swing</span>.<span class="constant">table</span>.<span class="type">DefaultTableModel</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">awt</span>.*;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">awt</span>.<span class="constant">event</span>.<span class="type">ActionEvent</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">awt</span>.<span class="constant">event</span>.<span class="type">ActionListener</span>;
+ 
+<span class="keyword"> public</span> <span class="keyword">class</span> <span class="type">GUI</span>
+        {
+ 
+                <span class="keyword">static</span> <span class="type">String</span> <span class="variable-name">currentQuery</span> = <span class="string">"select * from aktorzy"</span>;
+ 
+                <span class="keyword">static</span> <span class="type">Login</span> <span class="variable-name">user</span> = <span class="constant">null</span>;
+                <span class="keyword">static</span> <span class="type">Mysql</span> <span class="variable-name">db1</span> = <span class="constant">null</span>;
+ 
+                <span class="keyword">static</span> <span class="type">String</span> <span class="variable-name">data</span>[][] = <span class="constant">null</span>;
+                <span class="keyword">static</span> <span class="type">String</span> <span class="variable-name">kolumny</span>[] = <span class="constant">null</span>;
+                <span class="keyword">static</span> <span class="type">JTable</span> <span class="variable-name">table</span> = <span class="constant">null</span>;
+ 
+                <span class="keyword">static</span> <span class="type">JFrame</span> <span class="variable-name">okno</span> = <span class="constant">null</span>;
+ 
+                <span class="keyword">static</span> <span class="type">JComboBox</span>&lt;<span class="type">String</span>&gt; <span class="variable-name">jComboPola</span> = <span class="keyword">new</span> <span class="type">JComboBox</span>&lt;<span class="type">String</span>&gt;();
+ 
+                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">connect</span>()
+                {
+                                user = <span class="keyword">new</span> <span class="type">Login</span>(<span class="string">"admin"</span>,<span class="string">"pwsz"</span>,<span class="string">"192.168.0.97"</span>,3306);
+                                <span class="comment-delimiter">//</span><span class="comment">user = new Login();
+</span>                                
+                                db1 = <span class="keyword">new</span> <span class="type">Mysql</span>(user);
+                }
+                <span class="keyword">public</span> <span class="function-name">GUI</span>()
+                        {
+                                connect();
+                                createTable();
+                                updateTable();
+                                displayWindow();
+                        }
+ 
+                <span class="keyword">protected</span> <span class="type">void</span> <span class="function-name">finilize</span>()
+                        {
+                                db1.close();
+                        }
+ 
+                <span class="keyword">private</span> <span class="type">void</span> <span class="function-name">createTable</span>()
+                        {
+                                table = <span class="keyword">new</span> <span class="type">JTable</span>();
+                        }
+ 
+                <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="function-name">updateTable</span>()
+                        {
+                                <span class="comment-delimiter">// </span><span class="comment">zapytanie sql
+</span>                                System.out.print(<span class="string">"aktualizacja query "</span> + currentQuery + <span class="string">"\n"</span>);
+                                data = db1.select(currentQuery);
+                                kolumny = db1.getColumns(currentQuery);
+
+                                <span class="comment-delimiter">// </span><span class="comment">naniesc zmiany do tabeli
+</span>                                <span class="type">DefaultTableModel</span> <span class="variable-name">model</span> = <span class="keyword">new</span> <span class="type">DefaultTableModel</span>(data, kolumny);
+                                model.addRow(<span class="keyword">new</span> <span class="type">Object</span>[kolumny.length]);
+                                table.setModel(model);
+
+                                <span class="comment-delimiter">// </span><span class="comment">naprawic filtracje
+</span>                                <span class="keyword">if</span> (jComboPola.getItemCount() &gt; 0)
+                                        jComboPola.removeAllItems();
+
+                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; kolumny.<span class="type">length</span>; i++)
+                                {
+                                        jComboPola.addItem(kolumny[i]);
+                                }
+                        }
+
+                <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="function-name">displayWindow</span>()
+                        {
+
+                                <span class="comment-delimiter">// </span><span class="comment">combobox do wybrania tabeli
+</span>                                <span class="type">JComboBox</span>&lt;<span class="type">String</span>&gt; <span class="variable-name">jComboTabele</span> = <span class="keyword">new</span> <span class="type">JComboBox</span>&lt;<span class="type">String</span>&gt;(db1.getTables());
+
+                                jComboTabele.updateUI();
+
+                                <span class="comment-delimiter">// </span><span class="comment">tworzenie okna
+</span>                                okno = <span class="keyword">new</span> <span class="type">JFrame</span>(<span class="string">"LAB3"</span>);
+                                okno.setSize(1024, 780);
+                                okno.setDefaultCloseOperation(<span class="constant">JFrame</span>.EXIT_ON_CLOSE);
+
+                                <span class="comment-delimiter">//</span><span class="comment">JOptionPane.showMessageDialog(null, "Polaczono z baza");
+</span>
+                                <span class="comment-delimiter">// </span><span class="comment">tworzenie tabeli
+</span>                                <span class="type">JScrollPane</span> <span class="variable-name">scrollPane</span> = <span class="keyword">new</span> <span class="type">JScrollPane</span>(table);
+                                table.setFillsViewportHeight(<span class="constant">true</span>);
+                                okno.getContentPane().add(<span class="constant">BorderLayout</span>.CENTER, table);
+                                okno.getContentPane().add(<span class="constant">BorderLayout</span>.SOUTH, jComboTabele);
+
+                                <span class="type">JPanel</span> <span class="variable-name">jp2</span> = <span class="keyword">new</span> <span class="type">JPanel</span>(); <span class="comment-delimiter">// </span><span class="comment">tworzymy panel
+</span>                                <span class="type">JLabel</span> <span class="variable-name">jl2</span> = <span class="keyword">new</span> <span class="type">JLabel</span>(<span class="string">"filtracja"</span>); <span class="comment-delimiter">// </span><span class="comment">dajemy etykietke filtracja, zeby uzytkownik wiedzial co to
+</span>
+                                <span class="comment-delimiter">// </span><span class="comment">przyciski
+</span>                                <span class="type">JButton</span> <span class="variable-name">jbadd</span> = <span class="keyword">new</span> <span class="type">JButton</span>(<span class="string">"dodaj"</span>);
+                                <span class="type">JButton</span> <span class="variable-name">jbdel</span> = <span class="keyword">new</span> <span class="type">JButton</span>(<span class="string">"usun"</span>);
+                                <span class="type">JButton</span> <span class="variable-name">jbfilter</span> = <span class="keyword">new</span> <span class="type">JButton</span>(<span class="string">"Filtruj"</span>);
+                                <span class="type">JButton</span> <span class="variable-name">jbalter</span> = <span class="keyword">new</span> <span class="type">JButton</span>(<span class="string">"zmien"</span>);
+                                <span class="type">JButton</span> <span class="variable-name">jbdelfilter</span> = <span class="keyword">new</span> <span class="type">JButton</span>(<span class="string">"usun filtr"</span>);
+
+                                <span class="keyword">final</span> <span class="type">JTextField</span> <span class="variable-name">tfod</span> = <span class="keyword">new</span> <span class="type">JTextField</span>(<span class="string">"od"</span>);
+                                <span class="keyword">final</span> <span class="type">JTextField</span> <span class="variable-name">tfdo</span> = <span class="keyword">new</span> <span class="type">JTextField</span>(<span class="string">"do"</span>);
+
+                                jp2.add(jl2);
+                                jp2.add(jComboPola);
+                                jp2.add(tfod);
+                                jp2.add(tfdo);
+                                
+                                jp2.add(jbfilter);
+                                jp2.add(jbdel);
+                                jp2.add(jbadd);
+                                jp2.add(jbalter);
+                                jp2.add(jbdelfilter);
+                                okno.getContentPane().add(<span class="constant">BorderLayout</span>.NORTH, jp2);
+
+                                okno.setVisible(<span class="constant">true</span>);
+                                table.setVisible(<span class="constant">true</span>);
+
+                                <span class="comment-delimiter">// </span><span class="comment">Wybieranie tabeli
+</span>                                jComboTabele.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">e</span>)
+                                                        {
+                                                                currentQuery = <span class="string">"SELECT * FROM "</span> + jComboTabele.getSelectedItem() + <span class="string">";"</span>;
+                                                                updateTable();
+                                                        }
+                                        });
+                                jbdelfilter.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">e</span>)
+                                                        {
+                                                                currentQuery = <span class="string">"SELECT * FROM "</span> + jComboTabele.getSelectedItem() + <span class="string">";"</span>;
+                                                                updateTable();
+                                                        }
+                                        });
+
+                                <span class="comment-delimiter">// </span><span class="comment">wybieranie pola do filtrowania
+</span>                                jbfilter.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">evt</span>)
+                                                        {
+                                                                currentQuery = <span class="string">"SELECT * FROM "</span> + jComboTabele.getSelectedItem() + <span class="string">"  WHERE "</span>
+                                                                                + jComboPola.getSelectedItem() + <span class="string">" BETWEEN "</span> + tfod.getText() + <span class="string">" AND "</span>
+                                                                                + tfdo.getText() + <span class="string">";"</span>;
+                                                                updateTable();
+                                                        }
+                                        });
+                                <span class="comment-delimiter">//</span><span class="comment">usuwanie zaznaczonego rzedu
+</span>                                jbdel.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">evt</span>)
+                                                        {
+                                                                <span class="keyword">if</span> (table.getSelectedRow() != -1)
+                                                                { <span class="comment-delimiter">// </span><span class="comment">jak jest jakis zaznaczony
+</span>                                                                        <span class="type">int</span> <span class="variable-name">temp</span> = table.getSelectedRow(); <span class="comment-delimiter">// </span><span class="comment">tutaj numer rzedu se zapisujemy(juz chyba nie
+</span>                                                                                                                                                <span class="comment-delimiter">// </span><span class="comment">potrzebne, ale jest
+</span>                                                                        <span class="type">String</span> <span class="variable-name">stringDEL</span>[] = <span class="keyword">new</span> <span class="type">String</span>[kolumny.length];
+                                                                        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; kolumny.<span class="type">length</span>; i++)
+                                                                        {
+                                                                                stringDEL[i] = data[temp][i];
+                                                                        }
+                                                                        <span class="comment-delimiter">// </span><span class="comment">Main.printArray(stringiDEL);
+</span>                                                                        db1.deleteRow(jComboTabele.getSelectedItem().toString(), kolumny, stringDEL);
+                                                                        updateTable();
+                                                                }
+                                                        }
+                                        });
+                                <span class="comment-delimiter">//</span><span class="comment">dodawanie nowego rzedu
+</span>                                jbadd.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">evt</span>)
+                                                        {
+                                                                <span class="type">String</span> <span class="variable-name">stringADD</span>[] = <span class="keyword">new</span> <span class="type">String</span>[kolumny.length];
+                                                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; kolumny.<span class="type">length</span>; i++)
+                                                                {
+                                                                        stringADD[i] = (<span class="type">String</span>) table.getValueAt(data.length, i);
+                                                                }
+                                                                <span class="comment-delimiter">// </span><span class="comment">Main.printArray(stringADD);
+</span>                                                                db1.insertInto(jComboTabele.getSelectedItem().toString(), kolumny, stringADD);
+                                                                updateTable();
+
+                                                        }
+                                        });
+                                jbalter.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">evt</span>)
+                                                        {
+                                                                <span class="keyword">if</span> (table.getSelectedRow() != -1)
+                                                                { 
+                                                                        <span class="type">int</span> <span class="variable-name">temp</span> = table.getSelectedRow();
+                                                                        <span class="type">String</span> <span class="variable-name">stringDEL</span>[] = <span class="keyword">new</span> <span class="type">String</span>[kolumny.length];
+                                                                        <span class="type">String</span> <span class="variable-name">stringADD</span>[] = <span class="keyword">new</span> <span class="type">String</span>[kolumny.length];
+                                                                        
+                                                                        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; kolumny.<span class="type">length</span>; i++)
+                                                                        {
+                                                                                stringDEL[i] = data[temp][i];
+                                                                                stringADD[i] = (<span class="type">String</span>) table.getValueAt(temp, i);
+                                                                        }
+                                                                        <span class="comment-delimiter">// </span><span class="comment">Main.printArray(stringiDEL);
+</span>                                                                        
+                                                                        db1.alterRow(jComboTabele.getSelectedItem().toString(), kolumny, stringADD, stringDEL);
+                                                                        updateTable();
+                                                                }
+                                                        }
+                                        });
+                        }
+        };;
+</pre>
+  </body>
+</html>

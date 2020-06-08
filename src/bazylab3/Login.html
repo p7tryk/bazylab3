@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- Created by htmlize-1.56 in css mode. -->
+<html>
+  <head>
+    <title>Login.java</title>
+    <style type="text/css">
+    <!--
+      body {
+        color: #eeeeec;
+        background-color: #222;
+      }
+      .comment {
+        /* font-lock-comment-face */
+        color: #73d216;
+      }
+      .comment-delimiter {
+        /* font-lock-comment-delimiter-face */
+        color: #73d216;
+      }
+      .constant {
+        /* font-lock-constant-face */
+        color: #e9b2e3;
+      }
+      .function-name {
+        /* font-lock-function-name-face */
+        color: #fce94f;
+      }
+      .keyword {
+        /* font-lock-keyword-face */
+        color: #b4fa70;
+      }
+      .negation-char {
+      }
+      .string {
+        /* font-lock-string-face */
+        color: #e9b96e;
+      }
+      .type {
+        /* font-lock-type-face */
+        color: #8cc4ff;
+      }
+      .variable-name {
+        /* font-lock-variable-name-face */
+        color: #fcaf3e;
+      }
+
+      a {
+        color: inherit;
+        background-color: inherit;
+        font: inherit;
+        text-decoration: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    -->
+    </style>
+  </head>
+  <body>
+    <pre>
+<span class="keyword"> package</span> <span class="constant">bazylab3</span>;
+ 
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">awt</span>.<span class="constant">event</span>.<span class="type">ActionEvent</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">awt</span>.<span class="constant">event</span>.<span class="type">ActionListener</span>;
+ 
+<span class="keyword"> import</span> <span class="constant">javax</span>.<span class="constant">swing</span>.*;
+ 
+<span class="keyword"> public</span> <span class="keyword">class</span> <span class="type">Login</span>
+        {
+                <span class="comment-delimiter">// </span><span class="comment">to tylko struct ktory bedzie przechowywal uzytkownika
+</span>                <span class="type">String</span> <span class="variable-name">username</span>;
+                <span class="type">String</span> <span class="variable-name">password</span>;
+                <span class="type">String</span> <span class="variable-name">ip</span>;
+                <span class="type">int</span> <span class="variable-name">port</span>;
+                <span class="type">Boolean</span> <span class="variable-name">gonext</span> = <span class="constant">false</span>;
+ 
+                <span class="keyword">static</span> <span class="type">JFrame</span> <span class="variable-name">okno</span> = <span class="constant">null</span>;
+ 
+                <span class="keyword">public</span> <span class="function-name">Login</span>(<span class="type">String</span> <span class="variable-name">username</span>, <span class="type">String</span> <span class="variable-name">password</span>, <span class="type">String</span> <span class="variable-name">ip</span>, <span class="type">int</span> <span class="variable-name">port</span>)
+                        {
+                                <span class="keyword">this</span>.username = username;
+                                <span class="keyword">this</span>.password = password;
+                                <span class="keyword">this</span>.ip = ip;
+                                <span class="keyword">this</span>.port = port;
+                        }
+ 
+                <span class="keyword">public</span> <span class="function-name">Login</span>()
+                        {
+                                okno = <span class="keyword">new</span> <span class="type">JFrame</span>(<span class="string">"Po&#322;acz sie do bazy MySQL"</span>);
+                                okno.setSize(1024, 780);
+ 
+                                <span class="type">JPanel</span> <span class="variable-name">jp2</span> = <span class="keyword">new</span> <span class="type">JPanel</span>();
+                                <span class="type">JButton</span> <span class="variable-name">jbconnect</span> = <span class="keyword">new</span> <span class="type">JButton</span>(<span class="string">"polacz"</span>);
+ 
+                                <span class="keyword">final</span> <span class="type">JTextField</span> <span class="variable-name">tfip</span> = <span class="keyword">new</span> <span class="type">JTextField</span>(<span class="string">"192.168.0.97"</span>);
+                                <span class="keyword">final</span> <span class="type">JTextField</span> <span class="variable-name">tfport</span> = <span class="keyword">new</span> <span class="type">JTextField</span>(<span class="string">"3306"</span>);
+                                <span class="keyword">final</span> <span class="type">JTextField</span> <span class="variable-name">tfuser</span> = <span class="keyword">new</span> <span class="type">JTextField</span>(<span class="string">"admin"</span>);
+                                <span class="keyword">final</span> <span class="type">JTextField</span> <span class="variable-name">tfpass</span> = <span class="keyword">new</span> <span class="type">JTextField</span>(<span class="string">"pwsz"</span>);
+ 
+                                jp2.add(tfip);
+                                jp2.add(tfport);
+                                jp2.add(tfuser);
+                                jp2.add(tfpass);
+                                jp2.add(jbconnect);
+ 
+                                okno.getContentPane().add(jp2);
+ 
+                                okno.setVisible(<span class="constant">true</span>);
+ 
+                                jbconnect.addActionListener(<span class="keyword">new</span> <span class="type">ActionListener</span>()
+                                        {
+                                                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">actionPerformed</span>(<span class="type">ActionEvent</span> <span class="variable-name">evt</span>)
+                                                        {
+                                                                ip = tfip.getText();
+                                                                port = Integer.parseInt(tfport.getText());
+                                                                username = tfuser.getText();
+                                                                password = tfpass.getText();
+                                                                gonext = <span class="constant">true</span>;
+                                                                System.out.print(ip + port + username + password);
+                                                        }
+                                        });
+                                <span class="comment-delimiter">//</span><span class="comment">TODO czekac na to az uzytkownik kliknie zanim jechac dalej
+</span>                                <span class="keyword">while</span>(<span class="negation-char">!</span>gonext)
+                                {
+                                        
+                                }
+                        }
+
+        }
+</pre>
+  </body>
+</html>

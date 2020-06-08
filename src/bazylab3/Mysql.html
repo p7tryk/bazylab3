@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- Created by htmlize-1.56 in css mode. -->
+<html>
+  <head>
+    <title>Mysql.java</title>
+    <style type="text/css">
+    <!--
+      body {
+        color: #eeeeec;
+        background-color: #222;
+      }
+      .comment {
+        /* font-lock-comment-face */
+        color: #73d216;
+      }
+      .comment-delimiter {
+        /* font-lock-comment-delimiter-face */
+        color: #73d216;
+      }
+      .constant {
+        /* font-lock-constant-face */
+        color: #e9b2e3;
+      }
+      .function-name {
+        /* font-lock-function-name-face */
+        color: #fce94f;
+      }
+      .keyword {
+        /* font-lock-keyword-face */
+        color: #b4fa70;
+      }
+      .string {
+        /* font-lock-string-face */
+        color: #e9b96e;
+      }
+      .type {
+        /* font-lock-type-face */
+        color: #8cc4ff;
+      }
+      .variable-name {
+        /* font-lock-variable-name-face */
+        color: #fcaf3e;
+      }
+
+      a {
+        color: inherit;
+        background-color: inherit;
+        font: inherit;
+        text-decoration: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    -->
+    </style>
+  </head>
+  <body>
+    <pre>
+<span class="keyword"> package</span> <span class="constant">bazylab3</span>;
+ 
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">Connection</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">DriverManager</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">PreparedStatement</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">ResultSet</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">ResultSetMetaData</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">SQLException</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">sql</span>.<span class="type">Statement</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">util</span>.<span class="type">Arrays</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">util</span>.<span class="type">List</span>;
+ 
+<span class="keyword"> public</span> <span class="keyword">class</span> <span class="type">Mysql</span>
+        {
+                <span class="type">Connection</span> <span class="variable-name">baza</span>;
+                <span class="type">Login</span> <span class="variable-name">user</span>;
+                <span class="type">String</span> <span class="variable-name">url</span>;
+ 
+                <span class="keyword">public</span> <span class="function-name">Mysql</span>(<span class="type">Login</span> <span class="variable-name">login</span>)
+                        {
+                                <span class="keyword">this</span>.user = login;
+                                <span class="keyword">this</span>.url = <span class="string">"jdbc:mysql://"</span> + user.ip + <span class="string">":"</span> + user.port + <span class="string">"/lab3?serverTimezone=UTC"</span>;
+                                System.out.print(<span class="string">"probuje: "</span>+ url + <span class="string">"\n"</span>);
+                                connect();
+                        }
+ 
+                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">connect</span>()
+                        {
+                                <span class="keyword">try</span>
+                                {
+                                        baza = DriverManager.getConnection(url, user.username, user.password);
+ 
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+                                System.out.print(<span class="string">"polaczono z baza\n"</span>);
+                        }
+ 
+                <span class="keyword">public</span> <span class="type">String</span>[] <span class="function-name">getColumns</span>(<span class="type">String</span> <span class="variable-name">query</span>)
+                        {
+                                <span class="type">Statement</span> <span class="variable-name">zapytanie</span>;
+                                <span class="keyword">try</span>
+                                {
+                                        zapytanie = baza.createStatement();
+                                        <span class="type">ResultSet</span> <span class="variable-name">wynik</span> = zapytanie.executeQuery(query);
+                                        <span class="type">ResultSetMetaData</span> <span class="variable-name">wynikMeta</span> = wynik.getMetaData();
+                                        <span class="type">int</span> <span class="variable-name">kolumny</span> = wynikMeta.getColumnCount();
+                                        <span class="type">String</span> <span class="variable-name">output</span>[] = <span class="keyword">new</span> <span class="type">String</span>[kolumny];
+                                        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 1; i &lt;= kolumny; i++)
+                                        {
+                                                output[i - 1] = wynikMeta.getColumnName(i);
+                                        }
+                                        <span class="keyword">return</span> output;
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+
+                                <span class="keyword">return</span> <span class="constant">null</span>; <span class="comment-delimiter">// </span><span class="comment">just in case
+</span>
+                        }
+
+                <span class="keyword">public</span> <span class="type">String</span>[] <span class="function-name">getColumnTypes</span>(<span class="type">String</span> <span class="variable-name">query</span>)
+                        {
+                                <span class="type">Statement</span> <span class="variable-name">zapytanie</span>;
+                                <span class="keyword">try</span>
+                                {
+                                        zapytanie = baza.createStatement();
+                                        <span class="type">ResultSet</span> <span class="variable-name">wynik</span> = zapytanie.executeQuery(query);
+                                        <span class="type">ResultSetMetaData</span> <span class="variable-name">wynikMeta</span> = wynik.getMetaData();
+                                        <span class="type">int</span> <span class="variable-name">kolumny</span> = wynikMeta.getColumnCount();
+                                        <span class="type">String</span> <span class="variable-name">output</span>[] = <span class="keyword">new</span> <span class="type">String</span>[kolumny];
+                                        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 1; i &lt;= kolumny; i++)
+                                        {
+                                                output[i - 1] = wynikMeta.getColumnClassName(i);
+                                        }
+                                        <span class="keyword">return</span> output;
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+
+                                <span class="keyword">return</span> <span class="constant">null</span>; <span class="comment-delimiter">// </span><span class="comment">just in case
+</span>
+                        }
+
+                <span class="keyword">public</span> <span class="type">String</span>[] <span class="function-name">getTables</span>()
+                        {
+                                <span class="type">String</span> <span class="variable-name">temp</span>[][] = select(<span class="string">"show tables;"</span>);
+                                <span class="type">String</span> <span class="variable-name">kolumna</span>[] = <span class="keyword">new</span> <span class="type">String</span>[temp.length];
+                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; kolumna.<span class="type">length</span>; i++)
+                                {
+                                        kolumna[i] = temp[i][0];
+                                }
+                                <span class="keyword">return</span> kolumna;
+                        }
+
+                <span class="keyword">public</span> <span class="type">String</span>[][] <span class="function-name">select</span>(<span class="type">String</span> <span class="variable-name">query</span>)
+                        {
+                                <span class="keyword">try</span>
+                                {
+                                        <span class="type">PreparedStatement</span> <span class="variable-name">zapytanie</span> = baza.prepareStatement(query, <span class="constant">ResultSet</span>.TYPE_SCROLL_SENSITIVE,
+                                                        <span class="constant">ResultSet</span>.CONCUR_UPDATABLE);
+                                        <span class="type">ResultSet</span> <span class="variable-name">wynik</span> = zapytanie.executeQuery();
+                                        <span class="type">ResultSetMetaData</span> <span class="variable-name">wynikMeta</span> = wynik.getMetaData();
+                                        <span class="type">int</span> <span class="variable-name">kolumny</span> = wynikMeta.getColumnCount();
+                                        <span class="type">int</span> <span class="variable-name">n</span> = 0;
+
+                                        <span class="comment-delimiter">// </span><span class="comment">tutaj jest hack zeby dostac liczbe rekordow zwroconych, w sumie to nie wiem
+</span>                                        <span class="comment-delimiter">// </span><span class="comment">czy da sie lepiej zrobic
+</span>                                        <span class="keyword">while</span> (wynik.next())
+                                                n++;
+                                        <span class="keyword">while</span> (wynik.previous())
+                                                assert <span class="constant">true</span>; <span class="comment-delimiter">// </span><span class="comment">NOOP
+</span>
+                                        <span class="type">String</span> <span class="variable-name">output</span>[][] = <span class="keyword">new</span> <span class="type">String</span>[n][kolumny];
+                                        n = 0;
+                                        <span class="keyword">while</span> (wynik.next())
+                                        {
+                                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 1; i &lt;= kolumny; i++)
+                                                {
+                                                        <span class="type">String</span> <span class="variable-name">pole</span> = wynik.getString(i);
+
+                                                        output[n][i - 1] = pole;
+                                                }
+                                                n++;
+                                        }
+                                        <span class="keyword">return</span> output;
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+                                <span class="keyword">return</span> <span class="constant">null</span>; <span class="comment-delimiter">// </span><span class="comment">just incase
+</span>                        }
+
+                <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">arrayToString</span>(<span class="type">String</span> <span class="variable-name">array</span>[])
+                        {
+                                <span class="type">String</span> <span class="variable-name">output</span> = <span class="keyword">new</span> <span class="type">String</span>();
+                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; array.<span class="type">length</span>; i++)
+                                {
+                                        <span class="keyword">if</span> (i != 0)
+                                                output = output + <span class="string">","</span>;
+                                        output = output + <span class="string">"\""</span> + array[i] + <span class="string">"\""</span>;
+                                }
+                                <span class="comment-delimiter">//</span><span class="comment">System.out.print("array :\n" + output + "\n");
+</span>                                <span class="keyword">return</span> output;
+                        }
+
+                <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">objectToString</span>(<span class="type">List</span>&lt;<span class="type">Object</span>&gt; <span class="variable-name">object</span>)
+                        {
+                                <span class="type">String</span> <span class="variable-name">output</span> = <span class="keyword">new</span> <span class="type">String</span>();
+                                output = object.toString().replace(<span class="string">"["</span>, <span class="string">""</span>).replace(<span class="string">"]"</span>, <span class="string">""</span>);
+                                <span class="keyword">return</span> output;
+                        }
+
+                <span class="keyword">public</span> <span class="type">Boolean</span> <span class="function-name">insertInto</span>(<span class="type">String</span> <span class="variable-name">tabela</span>, <span class="type">String</span> <span class="variable-name">into</span>[], <span class="type">String</span>[] <span class="variable-name">values</span>)
+                        {
+                                <span class="type">String</span> <span class="variable-name">query</span> = <span class="string">"insert into "</span> + tabela + <span class="string">" values("</span> + arrayToString(values) + <span class="string">");"</span>;
+                                System.out.print(query + <span class="string">"\n"</span>);
+
+                                <span class="type">Statement</span> <span class="variable-name">zapytanie</span>;
+                                <span class="keyword">try</span>
+                                {
+                                        zapytanie = baza.createStatement();
+                                        <span class="type">int</span> <span class="variable-name">wynik</span> = zapytanie.executeUpdate(query);
+                                        <span class="keyword">return</span> <span class="constant">true</span>;
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+
+                                <span class="keyword">return</span> <span class="constant">false</span>;
+                        }
+
+                <span class="keyword">public</span> <span class="type">Boolean</span> <span class="function-name">deleteRow</span>(<span class="type">String</span> <span class="variable-name">tabela</span>, <span class="type">String</span>[] <span class="variable-name">kolumny</span>, <span class="type">String</span>[] <span class="variable-name">values</span>)
+                        {
+                                <span class="comment-delimiter">// </span><span class="comment">DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
+</span>                                <span class="type">String</span> <span class="variable-name">query</span> = <span class="string">"delete from "</span> + tabela + <span class="string">" where "</span>;
+
+                                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable-name">i</span> = 0; i &lt; values.<span class="type">length</span>; i++)
+                                {
+                                        <span class="keyword">if</span> (i != 0)
+                                                query = query + <span class="string">" AND "</span>;
+                                        query = query + kolumny[i] + <span class="string">" = \""</span> + values[i] + <span class="string">"\""</span>;
+                                }
+
+                                System.out.print(query + <span class="string">"\n"</span>); <span class="comment-delimiter">// </span><span class="comment">debug
+</span>
+                                <span class="type">Statement</span> <span class="variable-name">zapytanie</span>;
+                                <span class="keyword">try</span>
+                                {
+                                        zapytanie = baza.createStatement();
+                                        <span class="type">int</span> <span class="variable-name">wynik</span> = zapytanie.executeUpdate(query);
+                                        <span class="keyword">return</span> <span class="constant">true</span>;
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+
+                                <span class="keyword">return</span> <span class="constant">false</span>;
+                        }
+
+                <span class="keyword">public</span> <span class="type">Boolean</span> <span class="function-name">alterRow</span>(<span class="type">String</span> <span class="variable-name">tabela</span>, <span class="type">String</span>[] <span class="variable-name">kolumny</span>, <span class="type">String</span>[] <span class="variable-name">values</span>, <span class="type">String</span>[] <span class="variable-name">delete</span>)
+                        {
+                                deleteRow(tabela, kolumny, delete);
+                                insertInto(tabela, kolumny, values);
+                                <span class="keyword">return</span> <span class="constant">false</span>;
+                        }
+
+                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">close</span>()
+                        {
+                                <span class="keyword">try</span>
+                                {
+                                        System.out.printf(<span class="string">"zamykam baze\n"</span>);
+                                        baza.close();
+                                } <span class="keyword">catch</span> (<span class="type">SQLException</span> <span class="variable-name">ex</span>)
+                                {
+                                        debug(ex);
+                                }
+                        }
+
+                <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">debug</span>(<span class="type">SQLException</span> <span class="variable-name">ex</span>) <span class="comment-delimiter">// </span><span class="comment">bo mnie wkurzaja te try catche
+</span>                        {
+                                System.out.println(<span class="string">"SQLException: "</span> + ex.getMessage());
+                                System.out.println(<span class="string">"SQLState: "</span> + ex.getSQLState());
+                                System.out.println(<span class="string">"VendorError: "</span> + ex.getErrorCode());
+                        }
+        }
+</pre>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- Created by htmlize-1.56 in css mode. -->
+<html>
+  <head>
+    <title>Main.java</title>
+    <style type="text/css">
+    <!--
+      body {
+        color: #eeeeec;
+        background-color: #222;
+      }
+      .comment {
+        /* font-lock-comment-face */
+        color: #73d216;
+      }
+      .comment-delimiter {
+        /* font-lock-comment-delimiter-face */
+        color: #73d216;
+      }
+      .constant {
+        /* font-lock-constant-face */
+        color: #e9b2e3;
+      }
+      .function-name {
+        /* font-lock-function-name-face */
+        color: #fce94f;
+      }
+      .keyword {
+        /* font-lock-keyword-face */
+        color: #b4fa70;
+      }
+      .string {
+        /* font-lock-string-face */
+        color: #e9b96e;
+      }
+      .type {
+        /* font-lock-type-face */
+        color: #8cc4ff;
+      }
+      .variable-name {
+        /* font-lock-variable-name-face */
+        color: #fcaf3e;
+      }
+
+      a {
+        color: inherit;
+        background-color: inherit;
+        font: inherit;
+        text-decoration: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    -->
+    </style>
+  </head>
+  <body>
+    <pre>
+<span class="keyword"> package</span> <span class="constant">bazylab3</span>;
+ 
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">util</span>.<span class="type">ArrayList</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">util</span>.<span class="type">Arrays</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">util</span>.<span class="type">List</span>;
+<span class="keyword"> import</span> <span class="constant">java</span>.<span class="constant">util</span>.<span class="type">Scanner</span>;
+ 
+<span class="keyword"> public</span> <span class="keyword">class</span> <span class="type">Main</span>
+        {
+                <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable-name">ip</span> = <span class="string">"192.168.0.97"</span>;
+ 
+                <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="function-name">main</span>(<span class="type">String</span>[] <span class="variable-name">args</span>)
+                        {
+                                <span class="type">int</span> <span class="variable-name">i</span> = 1;
+                                
+                                <span class="keyword">if</span> (i == 1)
+                                {
+                                        <span class="type">GUI</span> <span class="variable-name">gui</span> = <span class="keyword">new</span> <span class="type">GUI</span>();
+                                } <span class="keyword">else</span>
+                                {
+<span class="comment-delimiter"> //                                     </span><span class="comment">Login user1 = new Login("admin", "pwsz");
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">Mysql db1 = new Mysql(user1, ip, 3306);
+</span><span class="comment-delimiter"> //</span><span class="comment">
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">String test[][];
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">String test2[];
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">String test3[];
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">String test4[];
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">test = db1.select("select * from filmy;");
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">test2 = db1.getColumns("select * from filmy;");
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">test3 = db1.getTables();
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">test4 = db1.getColumnTypes("select * from filmy;");
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">printArray(test2);
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">printArray(test4);
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">System.out.print("\n");
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">printArrayArray(test);
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">System.out.print("\n");
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">printArray(test3);
+</span><span class="comment-delimiter"> //                                     </span><span class="comment">db1.close();
+</span>                                }
+                        }
+ 
+                <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="function-name">printArrayArray</span>(<span class="type">String</span>[][] <span class="variable-name">tablica</span>)
+                        {
+                                <span class="comment-delimiter">// </span><span class="comment">evil copypaste magic https://stackoverflow.com/a/46018033
+</span>                                System.out.println(
+                                                Arrays.deepToString(tablica).replace(<span class="string">"], "</span>, <span class="string">"]\n"</span>).replace(<span class="string">"[["</span>, <span class="string">"["</span>).replace(<span class="string">"]]"</span>, <span class="string">"]"</span>));
+                        }
+ 
+                <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="function-name">printArray</span>(<span class="type">String</span>[] <span class="variable-name">tablica</span>)
+                        {
+                                System.out.println(Arrays.deepToString(tablica));
+                        }
+        }
+</pre>
+  </body>
+</html>
