@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Main
 	{
-		public static String ip = "127.0.0.1";
+		public static String ip = "192.168.0.97";
 
 		public static void main(String[] args)
 			{
@@ -26,7 +26,7 @@ public class Main
 					GUI2 gui = new GUI2();
 				} else
 				{
-					Permissions user1 = new Permissions("admin", "pwsz");
+					Login user1 = new Login("admin", "pwsz");
 					Mysql db1 = new Mysql(user1, ip, 3306);
 
 					String test[][];

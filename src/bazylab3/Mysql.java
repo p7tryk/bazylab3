@@ -13,16 +13,15 @@ import java.util.List;
 public class Mysql
 	{
 		Connection baza;
-		Permissions user;
+		Login user;
 		String url;
 
-		public Mysql(Permissions user, String ip, int port)
+		public Mysql(Login user, String ip, int port)
 			{
 				this.user = user;
-				this.url = "jdbc:mysql://"+ ip + ":" + port + "/lab3?serverTimezone=UTC";
+				this.url = "jdbc:mysql://" + ip + ":" + port + "/lab3?serverTimezone=UTC";
 				connect();
 			}
-		
 
 		public void connect()
 			{
@@ -37,59 +36,59 @@ public class Mysql
 				System.out.print("polaczono z baza\n");
 			}
 
-		
 		public String[] getColumns(String query)
 			{
-					Statement zapytanie;
-					try
+				Statement zapytanie;
+				try
+				{
+					zapytanie = baza.createStatement();
+					ResultSet wynik = zapytanie.executeQuery(query);
+					ResultSetMetaData wynikMeta = wynik.getMetaData();
+					int kolumny = wynikMeta.getColumnCount();
+					String output[] = new String[kolumny];
+					for (int i = 1; i <= kolumny; i++)
 					{
-						zapytanie = baza.createStatement();
-						ResultSet wynik = zapytanie.executeQuery(query);
-						ResultSetMetaData wynikMeta = wynik.getMetaData();
-						int kolumny = wynikMeta.getColumnCount();
-						String output[] = new String[kolumny];
-						for (int i = 1; i <= kolumny; i++)
-						{
-							output[i - 1] = wynikMeta.getColumnName(i);
-						}
-						return output;
-					} catch (SQLException ex)
-					{
-						debug(ex);
+						output[i - 1] = wynikMeta.getColumnName(i);
 					}
-
-					return null; // just in case
-
+					return output;
+				} catch (SQLException ex)
+				{
+					debug(ex);
 				}
+
+				return null; // just in case
+
+			}
+
 		public String[] getColumnTypes(String query)
 			{
-					Statement zapytanie;
-					try
+				Statement zapytanie;
+				try
+				{
+					zapytanie = baza.createStatement();
+					ResultSet wynik = zapytanie.executeQuery(query);
+					ResultSetMetaData wynikMeta = wynik.getMetaData();
+					int kolumny = wynikMeta.getColumnCount();
+					String output[] = new String[kolumny];
+					for (int i = 1; i <= kolumny; i++)
 					{
-						zapytanie = baza.createStatement();
-						ResultSet wynik = zapytanie.executeQuery(query);
-						ResultSetMetaData wynikMeta = wynik.getMetaData();
-						int kolumny = wynikMeta.getColumnCount();
-						String output[] = new String[kolumny];
-						for (int i = 1; i <= kolumny; i++)
-						{
-							output[i - 1] = wynikMeta.getColumnClassName(i);
-						}
-						return output;
-					} catch (SQLException ex)
-					{
-						debug(ex);
+						output[i - 1] = wynikMeta.getColumnClassName(i);
 					}
-
-					return null; // just in case
-
+					return output;
+				} catch (SQLException ex)
+				{
+					debug(ex);
 				}
+
+				return null; // just in case
+
+			}
 
 		public String[] getTables()
 			{
 				String temp[][] = select("show tables;");
 				String kolumna[] = new String[temp.length];
-				for(int i = 0;i<kolumna.length;i++)
+				for (int i = 0; i < kolumna.length; i++)
 				{
 					kolumna[i] = temp[i][0];
 				}
@@ -100,7 +99,8 @@ public class Mysql
 			{
 				try
 				{
-					PreparedStatement zapytanie = baza.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE );
+					PreparedStatement zapytanie = baza.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE,
+							ResultSet.CONCUR_UPDATABLE);
 					ResultSet wynik = zapytanie.executeQuery();
 					ResultSetMetaData wynikMeta = wynik.getMetaData();
 					int kolumny = wynikMeta.getColumnCount();
@@ -111,7 +111,7 @@ public class Mysql
 					while (wynik.next())
 						n++;
 					while (wynik.previous())
-						assert true; //NOOP
+						assert true; // NOOP
 
 					String output[][] = new String[n][kolumny];
 					n = 0;
@@ -121,7 +121,7 @@ public class Mysql
 						{
 							String pole = wynik.getString(i);
 
-							output[n][i-1] = pole;
+							output[n][i - 1] = pole;
 						}
 						n++;
 					}
@@ -132,43 +132,83 @@ public class Mysql
 				}
 				return null; // just incase
 			}
-		
+
 		public String arrayToString(String array[])
-		{
+			{
 				String output = new String();
-				output = Arrays.deepToString(array).replace("[", "").replace("]", "");
-//				System.out.print("array :\n" +  output + "\n");
+				for (int i = 0; i < array.length; i++)
+				{
+					if (i != 0)
+						output = output + ",";
+					output = output + "\"" + array[i] + "\"";
+				}
+				System.out.print("array :\n" + output + "\n");
 				return output;
-		}
+			}
+
 		public String objectToString(List<Object> object)
-		{
-			String output =  new String();
-			output = object.toString().replace("[", "").replace("]", "");
-			return output;
-		}
-		
-		public int insertInto(String tabela, String into[], List<Object> values)
+			{
+				String output = new String();
+				output = object.toString().replace("[", "").replace("]", "");
+				return output;
+			}
+
+		public Boolean insertInto(String tabela, String into[], String[] values)
 			{
 //				TODO to jest zle i podobno nie tak sie robi ale narazie zobaczy czy uda mi sie to tak zrobic
 //				SQLException: Unknown column 'animowany' in 'field list'
 //				SQLState: 42S22
 //				VendorError: 1054
-				String query = "insert into " + tabela  
-			+ " values(" + objectToString(values)+");";
-				System.out.print("insert:\n" + query + "\n"); //debug
-				
+				String query = "insert into " + tabela + " values(" + arrayToString(values) + ");";
+				System.out.print(query + "\n"); // debug
+
 				Statement zapytanie;
 				try
 				{
 					zapytanie = baza.createStatement();
 					int wynik = zapytanie.executeUpdate(query);
-					return wynik;
+					return true;
 				} catch (SQLException ex)
 				{
 					debug(ex);
 				}
-				
-				return -1;
+
+				return false;
+			}
+
+		public Boolean deleteRow(String tabela,String[] kolumny, String[] values)
+			{
+				// DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
+				String query = "delete from " + tabela + " where ";
+
+				for (int i = 0; i < values.length; i++)
+				{
+					if (i != 0)
+						query = query + " AND ";
+					query = query + kolumny[i] + " = \"" + values[i] + "\"";
+				}
+
+				System.out.print(query + "\n"); // debug
+
+				Statement zapytanie;
+				try
+				{
+					zapytanie = baza.createStatement();
+					int wynik = zapytanie.executeUpdate(query);
+					return true;
+				} catch (SQLException ex)
+				{
+					debug(ex);
+				}
+
+				return false;
+			}
+
+		public Boolean alterRow(String tabela, String[] kolumny, String[] values, String[] delete)
+			{
+				deleteRow(tabela, kolumny ,delete);
+				insertInto(tabela, kolumny, values);
+				return false;
 			}
 
 		public void close()
@@ -183,10 +223,7 @@ public class Mysql
 				}
 			}
 
-		
-		
-		
-		public void debug(SQLException ex) //bo mnie wkurzaja te try catche
+		public void debug(SQLException ex) // bo mnie wkurzaja te try catche
 			{
 				System.out.println("SQLException: " + ex.getMessage());
 				System.out.println("SQLState: " + ex.getSQLState());

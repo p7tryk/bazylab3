@@ -1,15 +1,19 @@
 package bazylab3;
 
-public class Permissions
+public class Login
 {
 	//to tylko struct ktory bedzie przechowywal uzytkownika
 	String username;
 	String password;
 	
-	public Permissions(String username, String password)
+	public Login(String username, String password)
 	{
 		this.username = username;
 		this.password = password;
+	}
+	public Login()
+	{
+			
 	}
 	
 }

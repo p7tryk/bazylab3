@@ -11,7 +11,7 @@ public class GUI2
 
 		static String currentQuery = "select * from aktorzy";
 
-		static Permissions user = new Permissions("admin", "pwsz");
+		static Login user = new Login("admin", "pwsz");
 		static Mysql db1 = new Mysql(user, Main.ip, 3306);
 
 		static String data[][] = null;
@@ -20,13 +20,18 @@ public class GUI2
 
 		static JFrame okno = null;
 
-		static JComboBox<String> jComboBox2 = new JComboBox();
-		
+		static JComboBox<String> jComboPola = new JComboBox<String>();
+
 		public GUI2()
 			{
 				createTable();
 				updateTable();
 				displayWindow();
+			}
+
+		protected void finilize()
+			{
+				db1.close();
 			}
 
 		private void createTable()
@@ -36,22 +41,23 @@ public class GUI2
 
 		public static void updateTable()
 			{
-				//zapytanie sql
+				// zapytanie sql
 				System.out.print("aktualizacja query " + currentQuery + "\n");
 				data = db1.select(currentQuery);
 				kolumny = db1.getColumns(currentQuery);
-				
-				//naniesc zmiany do tabeli
+
+				// naniesc zmiany do tabeli
 				DefaultTableModel model = new DefaultTableModel(data, kolumny);
+				model.addRow(new Object[kolumny.length]);
 				table.setModel(model);
-				
-				//naprawic filtracje
-				if(jComboBox2.getItemCount()>0)
-					jComboBox2.removeAllItems();
-				
-				for(int i=0; i<kolumny.length; i++)
+
+				// naprawic filtracje
+				if (jComboPola.getItemCount() > 0)
+					jComboPola.removeAllItems();
+
+				for (int i = 0; i < kolumny.length; i++)
 				{
-					jComboBox2.addItem(kolumny[i]);
+					jComboPola.addItem(kolumny[i]);
 				}
 			}
 
@@ -61,9 +67,9 @@ public class GUI2
 				// podzielic
 
 				// combobox do wybrania tabeli
-				JComboBox<String> jComboBox1 = new JComboBox<String>(db1.getTables());
+				JComboBox<String> jComboTabele = new JComboBox<String>(db1.getTables());
 
-				jComboBox1.updateUI();
+				jComboTabele.updateUI();
 
 				// tworzenie okna
 				okno = new JFrame("LAB3");
@@ -76,47 +82,86 @@ public class GUI2
 				JScrollPane scrollPane = new JScrollPane(table);
 				table.setFillsViewportHeight(true);
 				okno.getContentPane().add(BorderLayout.CENTER, table);
-				okno.getContentPane().add(BorderLayout.SOUTH, jComboBox1);
+				okno.getContentPane().add(BorderLayout.SOUTH, jComboTabele);
 
 				// filtracja
 				JPanel jp2 = new JPanel(); // tworzymy panel
 				JLabel jl2 = new JLabel("filtracja"); // dajemy etykietke filtracja, zeby uzytkownik wiedzial co to
 
-				JButton jb2 = new JButton("Filtruj");
-				final JTextField tf21 = new JTextField("od");
-				final JTextField tf22 = new JTextField("do");
-
+				JButton jbadd = new JButton("dodaj");
+				JButton jbdel = new JButton("usun");
+				JButton jbfilter = new JButton("Filtruj");
+				
+				final JTextField tfod = new JTextField("od");
+				final JTextField tfdo = new JTextField("do");
 
 				jp2.add(jl2);
-				jp2.add(jComboBox2);
-				jp2.add(tf21);
-				jp2.add(tf22);
-				jp2.add(jb2);
+				jp2.add(jComboPola);
+				jp2.add(tfod);
+				jp2.add(tfdo);
+				jp2.add(jbfilter);
+
+				jp2.add(jbdel);
+				jp2.add(jbadd);
 				okno.getContentPane().add(BorderLayout.NORTH, jp2);
 
 				okno.setVisible(true);
 				table.setVisible(true);
 
 				// Wybieranie tabeli
-				jComboBox1.addActionListener(new ActionListener()
+				jComboTabele.addActionListener(new ActionListener()
 					{
 
 						public void actionPerformed(ActionEvent e)
 							{
-								currentQuery = "SELECT * FROM " + jComboBox1.getSelectedItem() + ";";
+								currentQuery = "SELECT * FROM " + jComboTabele.getSelectedItem() + ";";
 								updateTable();
 							}
 					});
 
 				// wybieranie pola do filtrowania
-				jb2.addActionListener(new ActionListener()
+				jbfilter.addActionListener(new ActionListener()
 					{
 						public void actionPerformed(ActionEvent evt)
 							{
-								currentQuery = "SELECT * FROM " + jComboBox1.getSelectedItem() + "  WHERE "
-										+ jComboBox2.getSelectedItem() + " BETWEEN " + tf21.getText() + " AND "
-										+ tf22.getText() + ";";
+								currentQuery = "SELECT * FROM " + jComboTabele.getSelectedItem() + "  WHERE "
+										+ jComboPola.getSelectedItem() + " BETWEEN " + tfod.getText() + " AND "
+										+ tfdo.getText() + ";";
 								updateTable();
+							}
+					});
+				jbdel.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent evt)
+							{
+								if (table.getSelectedRow() != -1)
+								{ // jak jest jakis zaznaczony
+									int temp = table.getSelectedRow(); // tutaj numer rzedu se zapisujemy(juz chyba nie
+																		// potrzebne, ale jest
+									String stringDEL[] = new String[kolumny.length];
+									for (int i = 0; i < kolumny.length; i++)
+									{
+										stringDEL[i] = (String) table.getValueAt(temp, i);
+									}
+									//Main.printArray(stringiDEL);
+									db1.deleteRow(jComboTabele.getSelectedItem().toString(), kolumny , stringDEL);
+									updateTable();
+								}
+							}
+					});
+				jbadd.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent evt)
+							{
+								String stringADD[] = new String[kolumny.length];
+								for (int i = 0; i < kolumny.length; i++)
+								{
+									stringADD[i] = (String) table.getValueAt(data.length, i);
+								}
+								//Main.printArray(stringADD);
+								db1.insertInto(jComboTabele.getSelectedItem().toString(), kolumny, stringADD);
+								updateTable();
+
 							}
 					});
 			}

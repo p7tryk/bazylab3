@@ -20,7 +20,7 @@ public class GUI implements ActionListener
 		String currenttable = new String("filmy");
 		JFrame okno;
 		Mysql db1;
-		Permissions user1;
+		Login user1;
 
 		JTextField tf1 = new JTextField("od");
 		JTextField tf2 = new JTextField("do");
@@ -45,7 +45,7 @@ public class GUI implements ActionListener
 
 		public void login(String user, String password, String ip, int port)
 			{
-				user1 = new Permissions(user, password);
+				user1 = new Login(user, password);
 				db1 = new Mysql(user1, ip, port);
 			}
 
