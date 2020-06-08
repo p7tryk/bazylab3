@@ -37,7 +37,7 @@ create table role
 	imie varchar(50) null,
 	nazwisko varchar(50) null,
 	pseudonim varchar(50) null,
-	constraint id primary key(film_id,aktor_id),
+	primary key(film_id,aktor_id),
 	foreign key (film_id) references filmy(id),
 	foreign key (aktor_id) references aktorzy(id)
 );
