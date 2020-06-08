@@ -1,103 +1,211 @@
 package bazylab3;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
-
-public class GUI implements ActionListener
+public class GUI
 	{
-		// tutaj bedzie interfejs generowany i zmieniany
-		// TODO wszystko?
 
-		/*
-		 * tak ogolnie mysle zeby tutaj byl array tablic = Mysql.getTables i do kazdej
-		 * tabeli byla array kolumn = Mysql.getColumns wtedy od razu bedzie wiadomo jak
-		 * rozlozyci interfejs w sensie miejsca
-		 */
-		String currenttable = new String("filmy");
-		JFrame okno;
-		Mysql db1;
-		Login user1;
+		static String currentQuery = "select * from aktorzy";
 
-		JTextField tf1 = new JTextField("od");
-		JTextField tf2 = new JTextField("do");
+		static Login user = null;
+		static Mysql db1 = null;
 
-		
+		static String data[][] = null;
+		static String kolumny[] = null;
+		static JTable table = null;
+
+		static JFrame okno = null;
+
+		static JComboBox<String> jComboPola = new JComboBox<String>();
+
+		public void connect()
+		{
+				user = new Login("admin","pwsz","192.168.0.97",3306);
+				//user = new Login();
+				
+				db1 = new Mysql(user);
+		}
 		public GUI()
 			{
-				stworzOkno();
-				login("admin", "pwsz", Main.ip, 3306);
-				test();
-				nazajeciach();
-				okno.setVisible(true);
-				logout();
+				connect();
+				createTable();
+				updateTable();
+				displayWindow();
 			}
 
-		public void stworzOkno()
-			{
-				okno = new JFrame("Baza Filmow");
-				okno.setSize(1024, 768);
-				okno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			}
-
-		public void login(String user, String password, String ip, int port)
-			{
-				user1 = new Login(user, password);
-				db1 = new Mysql(user1, ip, port);
-			}
-
-		public void logout()
+		protected void finilize()
 			{
 				db1.close();
-				System.out.print("logging out\n");
 			}
 
-		public void drawTable(String data[][], String header[])
+		private void createTable()
 			{
-				JPanel jpl2 =  new JPanel();
-				System.out.print("drawing table\n");
-				// To w sumie wydaje sie banalne
-				JTable tabela = new JTable(data, header);
-
-				jpl2.setLayout(new BorderLayout());
-				jpl2.add(tabela.getTableHeader(), BorderLayout.PAGE_START);
-				jpl2.add(tabela, BorderLayout.CENTER);
-				okno.add(BorderLayout.SOUTH,jpl2);
+				table = new JTable();
 			}
 
-		public void nazajeciach()
+		public static void updateTable()
 			{
-				//TODO to tylko jest
-				JPanel jpl = new JPanel();
-				JLabel jl1 = new JLabel("termin oddania");
+				// zapytanie sql
+				System.out.print("aktualizacja query " + currentQuery + "\n");
+				data = db1.select(currentQuery);
+				kolumny = db1.getColumns(currentQuery);
 
-				tf1.setPreferredSize(new Dimension(128, 32));
-				tf2.setPreferredSize(new Dimension(128, 32));
+				// naniesc zmiany do tabeli
+				DefaultTableModel model = new DefaultTableModel(data, kolumny);
+				model.addRow(new Object[kolumny.length]);
+				table.setModel(model);
 
-				JButton btn1 = new JButton("filtruj");
-				btn1.addActionListener(this);
-				jpl.add(jl1);
-				jpl.add(tf1);
-				jpl.add(tf2);
-				jpl.add(btn1);
-				okno.add(jpl);
+				// naprawic filtracje
+				if (jComboPola.getItemCount() > 0)
+					jComboPola.removeAllItems();
+
+				for (int i = 0; i < kolumny.length; i++)
+				{
+					jComboPola.addItem(kolumny[i]);
+				}
 			}
 
-		public void test()
+		public static void displayWindow()
 			{
 
-				String[][] output = db1.select("select * from " + currenttable);
-				String[] kolumny = db1.getColumns("select * from " + currenttable);
-				drawTable(output, kolumny);
+				// combobox do wybrania tabeli
+				JComboBox<String> jComboTabele = new JComboBox<String>(db1.getTables());
+
+				jComboTabele.updateUI();
+
+				// tworzenie okna
+				okno = new JFrame("LAB3");
+				okno.setSize(1024, 780);
+				okno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+				//JOptionPane.showMessageDialog(null, "Polaczono z baza");
+
+				// tworzenie tabeli
+				JScrollPane scrollPane = new JScrollPane(table);
+				table.setFillsViewportHeight(true);
+				okno.getContentPane().add(BorderLayout.CENTER, table);
+				okno.getContentPane().add(BorderLayout.SOUTH, jComboTabele);
+
+				JPanel jp2 = new JPanel(); // tworzymy panel
+				JLabel jl2 = new JLabel("filtracja"); // dajemy etykietke filtracja, zeby uzytkownik wiedzial co to
+
+				// przyciski
+				JButton jbadd = new JButton("dodaj");
+				JButton jbdel = new JButton("usun");
+				JButton jbfilter = new JButton("Filtruj");
+				JButton jbalter = new JButton("zmien");
+				JButton jbdelfilter = new JButton("usun filtr");
+
+				final JTextField tfod = new JTextField("od");
+				final JTextField tfdo = new JTextField("do");
+
+				jp2.add(jl2);
+				jp2.add(jComboPola);
+				jp2.add(tfod);
+				jp2.add(tfdo);
+				
+				jp2.add(jbfilter);
+				jp2.add(jbdel);
+				jp2.add(jbadd);
+				jp2.add(jbalter);
+				jp2.add(jbdelfilter);
+				okno.getContentPane().add(BorderLayout.NORTH, jp2);
+
+				okno.setVisible(true);
+				table.setVisible(true);
+
+				// Wybieranie tabeli
+				jComboTabele.addActionListener(new ActionListener()
+					{
+
+						public void actionPerformed(ActionEvent e)
+							{
+								currentQuery = "SELECT * FROM " + jComboTabele.getSelectedItem() + ";";
+								updateTable();
+							}
+					});
+				jbdelfilter.addActionListener(new ActionListener()
+					{
+
+						public void actionPerformed(ActionEvent e)
+							{
+								currentQuery = "SELECT * FROM " + jComboTabele.getSelectedItem() + ";";
+								updateTable();
+							}
+					});
+
+				// wybieranie pola do filtrowania
+				jbfilter.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent evt)
+							{
+								currentQuery = "SELECT * FROM " + jComboTabele.getSelectedItem() + "  WHERE "
+										+ jComboPola.getSelectedItem() + " BETWEEN " + tfod.getText() + " AND "
+										+ tfdo.getText() + ";";
+								updateTable();
+							}
+					});
+				//usuwanie zaznaczonego rzedu
+				jbdel.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent evt)
+							{
+								if (table.getSelectedRow() != -1)
+								{ // jak jest jakis zaznaczony
+									int temp = table.getSelectedRow(); // tutaj numer rzedu se zapisujemy(juz chyba nie
+																		// potrzebne, ale jest
+									String stringDEL[] = new String[kolumny.length];
+									for (int i = 0; i < kolumny.length; i++)
+									{
+										stringDEL[i] = data[temp][i];
+									}
+									// Main.printArray(stringiDEL);
+									db1.deleteRow(jComboTabele.getSelectedItem().toString(), kolumny, stringDEL);
+									updateTable();
+								}
+							}
+					});
+				//dodawanie nowego rzedu
+				jbadd.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent evt)
+							{
+								String stringADD[] = new String[kolumny.length];
+								for (int i = 0; i < kolumny.length; i++)
+								{
+									stringADD[i] = (String) table.getValueAt(data.length, i);
+								}
+								// Main.printArray(stringADD);
+								db1.insertInto(jComboTabele.getSelectedItem().toString(), kolumny, stringADD);
+								updateTable();
+
+							}
+					});
+				jbalter.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent evt)
+							{
+								if (table.getSelectedRow() != -1)
+								{ 
+									int temp = table.getSelectedRow();
+									String stringDEL[] = new String[kolumny.length];
+									String stringADD[] = new String[kolumny.length];
+									
+									for (int i = 0; i < kolumny.length; i++)
+									{
+										stringDEL[i] = data[temp][i];
+										stringADD[i] = (String) table.getValueAt(temp, i);
+									}
+									// Main.printArray(stringiDEL);
+									
+									db1.alterRow(jComboTabele.getSelectedItem().toString(), kolumny, stringADD, stringDEL);
+									updateTable();
+								}
+							}
+					});
 			}
-		
-		@Override
-		public void actionPerformed(ActionEvent e)
-			{
-				System.out.print("klikniety\n");
-				System.out.print("od " + tf1.getText() + " do " + tf2.getText() + "\n");
-			}
-	}
+	};;

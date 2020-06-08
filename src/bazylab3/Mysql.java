@@ -16,10 +16,11 @@ public class Mysql
 		Login user;
 		String url;
 
-		public Mysql(Login user, String ip, int port)
+		public Mysql(Login login)
 			{
-				this.user = user;
-				this.url = "jdbc:mysql://" + ip + ":" + port + "/lab3?serverTimezone=UTC";
+				this.user = login;
+				this.url = "jdbc:mysql://" + user.ip + ":" + user.port + "/lab3?serverTimezone=UTC";
+				System.out.print("probuje: "+ url + "\n");
 				connect();
 			}
 
@@ -142,7 +143,7 @@ public class Mysql
 						output = output + ",";
 					output = output + "\"" + array[i] + "\"";
 				}
-				System.out.print("array :\n" + output + "\n");
+				//System.out.print("array :\n" + output + "\n");
 				return output;
 			}
 
@@ -155,12 +156,8 @@ public class Mysql
 
 		public Boolean insertInto(String tabela, String into[], String[] values)
 			{
-//				TODO to jest zle i podobno nie tak sie robi ale narazie zobaczy czy uda mi sie to tak zrobic
-//				SQLException: Unknown column 'animowany' in 'field list'
-//				SQLState: 42S22
-//				VendorError: 1054
 				String query = "insert into " + tabela + " values(" + arrayToString(values) + ");";
-				System.out.print(query + "\n"); // debug
+				System.out.print(query + "\n");
 
 				Statement zapytanie;
 				try
@@ -176,7 +173,7 @@ public class Mysql
 				return false;
 			}
 
-		public Boolean deleteRow(String tabela,String[] kolumny, String[] values)
+		public Boolean deleteRow(String tabela, String[] kolumny, String[] values)
 			{
 				// DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
 				String query = "delete from " + tabela + " where ";
@@ -206,7 +203,7 @@ public class Mysql
 
 		public Boolean alterRow(String tabela, String[] kolumny, String[] values, String[] delete)
 			{
-				deleteRow(tabela, kolumny ,delete);
+				deleteRow(tabela, kolumny, delete);
 				insertInto(tabela, kolumny, values);
 				return false;
 			}
