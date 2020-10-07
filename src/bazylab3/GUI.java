@@ -1,10 +1,13 @@
 package bazylab3;
 
 import javax.swing.*;
+
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.sql.SQLException;
 
 public class GUI
 	{
@@ -22,16 +25,23 @@ public class GUI
 
 		static JComboBox<String> jComboPola = new JComboBox<String>();
 
-		public void connect()
+		public void connect() throws SQLException
 		{
-				user = new Login("admin","pwsz","192.168.0.97",3306);
+				user = new Login("admin","pwsz","notarch.lan",3306);
 				//user = new Login();
-				
 				db1 = new Mysql(user);
 		}
 		public GUI()
 			{
-				connect();
+				try
+				{
+					connect();
+				} catch (SQLException ex)
+				{
+					System.out.println("SQLException: " + ex.getMessage());
+					System.out.println("SQLState: " + ex.getSQLState());
+					System.out.println("VendorError: " + ex.getErrorCode());
+				}
 				createTable();
 				updateTable();
 				displayWindow();

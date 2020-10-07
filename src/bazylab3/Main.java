@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Main
 	{
-		public static String ip = "192.168.0.97";
+		public static String ip = "127.0.0.1";
 
 		public static void main(String[] args)
 			{

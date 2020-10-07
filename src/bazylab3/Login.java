@@ -32,7 +32,7 @@ public class Login
 				JPanel jp2 = new JPanel();
 				JButton jbconnect = new JButton("polacz");
 
-				final JTextField tfip = new JTextField("192.168.0.97");
+				final JTextField tfip = new JTextField("127.0.0.1");
 				final JTextField tfport = new JTextField("3306");
 				final JTextField tfuser = new JTextField("admin");
 				final JTextField tfpass = new JTextField("pwsz");
